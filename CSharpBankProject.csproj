@@ -7,4 +7,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="src\Data\" />
+    <Folder Include="src\Models\" />
+    <Folder Include="src\Menus\" />
+    <Folder Include="src\Services\" />
+  </ItemGroup>
+
 </Project>
