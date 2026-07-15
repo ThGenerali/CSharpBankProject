@@ -21,7 +21,7 @@ namespace CSharpBankProject.src.BankConsole.Menus
 \n");
         }
 
-        int MainMenu()
+        public int MainMenu()
         {
             Title();
             Console.WriteLine(@"
@@ -30,34 +30,11 @@ Welcome to CSharp Bank!
 2. Register
 3. Exit
 ");
-            int choice = Convert.ToInt32(Console.ReadLine());
+            int choice = int.Parse(Console.ReadLine());
             return choice;
         }
 
-        List<string> LoginMenu()
-        {
-            Title();
-            Console.WriteLine("Please enter your login credentials");
-            string login = Console.ReadLine();
-            Console.WriteLine("\nPlease enter your password");
-            string password = Console.ReadLine();
-            List<string> credentials = new List<string> { login, password };
-            return credentials; 
-
-        }
-
-        List<string> RegisterMenu()
-        {
-            Title();
-            Console.WriteLine("Please enter your registration details");
-            string username = Console.ReadLine();
-            Console.WriteLine("\nPlease enter your password");
-            string password = Console.ReadLine();
-            List<string> registrationDetails = new List<string> { username, password };
-            return registrationDetails;
-        }
-
-        int AccountMenu(string username, decimal balance)
+        public int AccountMenu(string username, decimal balance)
         {
             Title();
             Console.WriteLine(@$"
@@ -67,9 +44,36 @@ Would you like to do?
 1.Deposit
 2.Withdraw
 3.Transfer
+4.Logout
 ");
             int choice = Convert.ToInt32(Console.ReadLine());
             return choice;
+        }
+
+        public List<string> RegisterMenu()
+        {
+            Title();
+            Console.WriteLine("Please enter your name: ");
+            string name = Console.ReadLine();
+            Console.WriteLine("Please enter your surname: ");
+            string surname = Console.ReadLine();
+            Console.WriteLine("Please enter your password: ");
+            string password = Console.ReadLine();
+            Console.WriteLine("Please confirm your password: ");
+            string confirmPassword = Console.ReadLine();
+            return new List<string> { name, surname, password, confirmPassword };
+        }
+
+        public List<string> LoginMenu()
+        {
+            Title();
+            Console.WriteLine(@"
+Please enter your name and surname: 
+(Remeber to add a space between them and don't at the final)");
+            string nameLogin = Console.ReadLine();
+            Console.WriteLine("Please enter your password: ");
+            string password = Console.ReadLine();
+            return new List<string> { nameLogin, password };
         }
 
     }
