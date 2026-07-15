@@ -46,7 +46,7 @@ Would you like to do?
 3.Transfer
 4.Logout
 ");
-            int choice = Convert.ToInt32(Console.ReadLine());
+            int choice = int.Parse(Console.ReadLine());
             return choice;
         }
 
