@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CSharpBankProject.src.BankConsole.Data;
+using CSharpBankProject.src.BankConsole.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace CSharpBankProject.src.BankConsole.Models
 {
-    internal class Account
+    internal class Account 
     {
+
     }
 }
