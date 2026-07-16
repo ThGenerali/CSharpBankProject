@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CSharpBankProject.src.BankConsole.Services
 {
-    internal class Transaction
+    internal class Transaction 
     {
     }
 }
