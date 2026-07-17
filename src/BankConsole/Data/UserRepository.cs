@@ -10,7 +10,7 @@ namespace CSharpBankProject.src.BankConsole.Data
     //UserRepository class is responsible for managing user accounts in the banking application. It maintains a collection of user accounts and provides methods to add, retrieve, and manage user data.
     internal class UserRepository
     {
-        public Dictionary<Guid, User> Users { get; private set; }
+        private Dictionary<Guid, User> Users { get; set; }
 
         public UserRepository()
         {
