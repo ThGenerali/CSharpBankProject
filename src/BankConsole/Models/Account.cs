@@ -34,7 +34,7 @@ namespace CSharpBankProject.src.BankConsole.Models
             Transfer
         }
 
-        public void Deposit(decimal amount, int pin)
+        public bool Deposit(decimal amount, int pin)
         {
             bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
             if(hasSufficientBalance)
@@ -43,13 +43,17 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if(pinVerified)
                 {
                     accountRepository.UpdateAccountBalance(TransactionType.Deposit.ToString(), AccountNumber, null, amount);
+                    return true;
                 } else {
                     // Handle incorrect PIN
+                    Console.WriteLine("Incorrect PIN. Deposit failed.");
+                    return false;
                 }
             }
+            return false;
         }
 
-        public void Withdraw(decimal amount, int pin)
+        public bool Withdraw(decimal amount, int pin)
         {
             bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
             if (hasSufficientBalance)
@@ -57,21 +61,25 @@ namespace CSharpBankProject.src.BankConsole.Models
                 bool pinVerified = accountRepository.VerifyAccountPin(AccountNumber, pin);
                 if (pinVerified)
                 {
-                    accountRepository.UpdateAccountBalance(TransactionType.Deposit.ToString(), AccountNumber, null, amount);
+                    accountRepository.UpdateAccountBalance(TransactionType.Withdraw.ToString(), AccountNumber, null, amount);
+                    return true;
                 }
                 else
                 {
                     // Handle incorrect PIN
+                    Console.WriteLine("Incorrect PIN. Withdrawal failed.");
+                    return false;
                 }
             }
+            return false;
         }
 
-        public void Transfer(Account? recipientAccount, decimal amount, int pin)
+        public bool Transfer(Account? recipientAccount, decimal amount, int pin)
         {
             if (recipientAccount == null)
             {
                 // Handle null recipient account
-                return;
+                Console.WriteLine($"{nameof(recipientAccount)} Account didn't find in the system.");
             }
 
             bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
@@ -81,12 +89,17 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if (pinVerified)
                 {
                     accountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, recipientAccount.AccountNumber, amount);
+                    recipientAccount.Balance += amount; // Update the recipient's balance
+                    return true;
                 }
                 else
                 {
                     // Handle incorrect PIN
+                    Console.WriteLine("Incorrect PIN. Transfer failed.");
+                    return false;
                 }
             }
+            return false;
         }
     }
 }
