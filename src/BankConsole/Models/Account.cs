@@ -49,8 +49,11 @@ namespace CSharpBankProject.src.BankConsole.Models
                     Console.WriteLine("Incorrect PIN. Deposit failed.");
                     return false;
                 }
+            } else {
+                // Handle insufficient balance
+                Console.WriteLine("Insufficient balance. Deposit failed.");
+                return false;
             }
-            return false;
         }
 
         public bool Withdraw(decimal amount, int pin)
@@ -70,8 +73,11 @@ namespace CSharpBankProject.src.BankConsole.Models
                     Console.WriteLine("Incorrect PIN. Withdrawal failed.");
                     return false;
                 }
+            } else {
+                // Handle insufficient balance
+                Console.WriteLine("Insufficient balance. Withdrawal failed.");
+                return false;
             }
-            return false;
         }
 
         public bool Transfer(Account? recipientAccount, decimal amount, int pin)
@@ -98,8 +104,12 @@ namespace CSharpBankProject.src.BankConsole.Models
                     Console.WriteLine("Incorrect PIN. Transfer failed.");
                     return false;
                 }
+            } else {
+                // Handle insufficient balance
+                Console.WriteLine("Insufficient balance. Transfer failed.");
+                return false;
             }
-            return false;
+            
         }
     }
 }

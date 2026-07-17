@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CSharpBankProject.src.BankConsole.Data
 {
-    internal class AccountRepository : UserRepository
+    internal class AccountRepository 
     {
         //properties
         private Dictionary<Guid, Account> Accounts { get; set; }
@@ -73,6 +73,13 @@ namespace CSharpBankProject.src.BankConsole.Data
                 }
             }
         }
+
+        //Generate a unique account number for a new account
+        //This method generates a random 6-digit account number and checks if it already exists in the Accounts dictionary. If it does, it generates a new number until a unique one is found.
+
+        //Create a 4-digit PIN for the account
+        //This method asks the user to enter a 4-digit PIN for the account. It checks if the entered PIN is valid (i.e., it is a 4-digit number) and returns it. If the entered PIN is invalid, it prompts the user to enter a valid PIN.
+
 
 
     }
