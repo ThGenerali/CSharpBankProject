@@ -10,11 +10,12 @@ namespace CSharpBankProject.src.BankConsole.Data
     //UserRepository class is responsible for managing user accounts in the banking application. It maintains a collection of user accounts and provides methods to add, retrieve, and manage user data.
     internal class UserRepository
     {
-        private Dictionary<Guid, User> Users { get; set; }
-
+        public Dictionary<Guid, User> Users { get; private set; }
+        public Guid Id { get; init; }
         public UserRepository()
         {
             Users = new Dictionary<Guid, User>();
+            Id = Guid.NewGuid();
         }
 
         // Adds a new user account to the repository.
@@ -24,9 +25,9 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
                 
         //Verify password method checks if the provided password matches the stored password for a specific user account. It retrieves the user account based on the unique identifier (Guid) and compares the provided password with the stored password.
-        public bool VerifyPasword(string username, string password)
+        public bool VerifyLoginPasword(string username, string password)
         {   
-            var user = Users.Values.FirstOrDefault(u => u.NameUsername[1] == username); // Retrieve the user based on the provided username
+            var user = Users.Values.FirstOrDefault(u => u.Username == username); // Retrieve the user based on the provided username
             if (user != null)
             {
                 return user.Password == password;
@@ -41,7 +42,7 @@ namespace CSharpBankProject.src.BankConsole.Data
             //Iterate through the collection of user accounts and check if the provided username exists
             foreach (var user in Users.Values) 
             {
-                if (user.NameUsername[1] == username)
+                if (user.Username == username)
                 {
                     return true;
                 }
@@ -50,7 +51,7 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
 
         //VerifyRegisterInfo method checks if the provided registration information (name, username, and password) is valid for creating a new user account. It verifies that the name and username are not empty and that the password meets certain criteria (e.g., minimum length).
-        public bool VerifyRegisterInfo(string password, string confirmPassword)
+        public bool VerifyRegisterPassword(string password, string confirmPassword)
         {
             if (confirmPassword != password)
             {
@@ -58,6 +59,7 @@ namespace CSharpBankProject.src.BankConsole.Data
             }
             return true;
         }
+
     }
 }
                                                 
