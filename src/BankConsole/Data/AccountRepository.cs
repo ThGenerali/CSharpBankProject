@@ -84,30 +84,9 @@ namespace CSharpBankProject.src.BankConsole.Data
             do
             {
                 accountNumber = random.Next(100000, 999999);
-                return accountNumber;
             }
             while (VerifyAccountExists(accountNumber));
-
-        }
-        //Create a 4-digit PIN for the account
-        //This method asks the user to enter a 4-digit PIN for the account. It checks if the entered PIN is valid (i.e., it is a 4-digit number) and returns it. If the entered PIN is invalid, it prompts the user to enter a valid PIN.
-        public int CreatePin()
-        {
-            int pin;
-            do
-            {
-                Console.Write("Enter a 4-digit PIN for your account: ");
-                string input = Console.ReadLine();
-                if (int.TryParse(input, out pin) && input.Length == 4)
-                {
-                    return pin;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid PIN. Please enter a 4-digit number.");
-                }
-            } while (true);
-
+            return accountNumber;
         }
     }
 }

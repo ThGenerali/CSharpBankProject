@@ -8,24 +8,26 @@ using System.Threading.Tasks;
 
 namespace CSharpBankProject.src.BankConsole.Models
 {
-    internal class Account : User
+    internal class Account
     {
         public Guid AccountId { get; init; }
-        public int AccountNumber { get; private set; }
+        public int AccountNumber { get; init; }
         public decimal Balance { get; set; }
         public int Pin { get; private set; }
+        public User User { get; }
 
-        public Account(string name, string username, string password, Guid AccountId, int AccountNumber, decimal Balance, int Pin, User user) : base(name, username, password)
+        private AccountRepository accountRepository;
+
+        public Account(Guid accountId, int accountNumber, decimal balance, int pin, User user, AccountRepository accountRepository)
         {
             Guid id = user.Id;
             this.AccountId = id;
-            this.AccountNumber = AccountNumber;
-            this.Balance = Balance;
-            this.Pin = Pin;
+            this.AccountNumber = accountNumber;
+            this.Balance = balance;
+            this.Pin = pin;
+            this.User = user;
+            this.accountRepository = accountRepository;
         }
-
-        // Create an instance of the AccountRepository class to access the account data "dependency injection"
-        protected AccountRepository accountRepository = new AccountRepository();
 
         enum TransactionType
         {
@@ -34,29 +36,23 @@ namespace CSharpBankProject.src.BankConsole.Models
             Transfer
         }
 
-        public bool Deposit(decimal amount, int pin)
+        public void Deposit(decimal amount, int pin)
         {
-            bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
-            if(hasSufficientBalance)
+            bool pinVerified = accountRepository.VerifyAccountPin(AccountNumber, pin);
+            if (pinVerified)
             {
-                bool pinVerified = accountRepository.VerifyAccountPin(AccountNumber, pin);
-                if(pinVerified)
-                {
-                    accountRepository.UpdateAccountBalance(TransactionType.Deposit.ToString(), AccountNumber, null, amount);
-                    return true;
-                } else {
-                    // Handle incorrect PIN
-                    Console.WriteLine("Incorrect PIN. Deposit failed.");
-                    return false;
-                }
-            } else {
-                // Handle insufficient balance
-                Console.WriteLine("Insufficient balance. Deposit failed.");
-                return false;
+                accountRepository.UpdateAccountBalance(TransactionType.Deposit.ToString(), AccountNumber, null, amount);
+                Console.WriteLine($"Deposit of {amount} successful. New balance: {Balance}");
             }
+            else
+            {
+                // Handle incorrect PIN
+                throw new UnauthorizedAccessException("Incorrect PIN. Deposit failed.");
+            }
+
         }
 
-        public bool Withdraw(decimal amount, int pin)
+        public void Withdraw(decimal amount, int pin)
         {
             bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
             if (hasSufficientBalance)
@@ -65,29 +61,24 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if (pinVerified)
                 {
                     accountRepository.UpdateAccountBalance(TransactionType.Withdraw.ToString(), AccountNumber, null, amount);
-                    return true;
+                    Console.WriteLine($"Withdrawal of {amount} successful. New balance: {Balance}");
                 }
                 else
                 {
                     // Handle incorrect PIN
-                    Console.WriteLine("Incorrect PIN. Withdrawal failed.");
-                    return false;
+                    throw new UnauthorizedAccessException("Incorrect PIN. Withdrawal failed.");
+
                 }
-            } else {
+            }
+            else
+            {
                 // Handle insufficient balance
-                Console.WriteLine("Insufficient balance. Withdrawal failed.");
-                return false;
+                throw new InvalidOperationException("Insufficient balance. Withdrawal failed.");
             }
         }
 
-        public bool Transfer(Account? recipientAccount, decimal amount, int pin)
+        public void Transfer(Account? recipientAccount, decimal amount, int pin)
         {
-            if (recipientAccount == null)
-            {
-                // Handle null recipient account
-                Console.WriteLine($"{nameof(recipientAccount)} Account didn't find in the system.");
-            }
-
             bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
             if (hasSufficientBalance)
             {
@@ -95,21 +86,34 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if (pinVerified)
                 {
                     accountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, recipientAccount.AccountNumber, amount);
-                    recipientAccount.Balance += amount; // Update the recipient's balance
-                    return true;
+                    Console.WriteLine($"Transfer of {amount} to account {recipientAccount.User.Name} successful. New balance: {Balance}");
                 }
                 else
                 {
                     // Handle incorrect PIN
-                    Console.WriteLine("Incorrect PIN. Transfer failed.");
-                    return false;
+                    throw new UnauthorizedAccessException("Incorrect PIN. Transfer failed.");
                 }
-            } else {
-                // Handle insufficient balance
-                Console.WriteLine("Insufficient balance. Transfer failed.");
-                return false;
             }
-            
+            else
+            {
+                // Handle insufficient balance
+                throw new InvalidOperationException("Insufficient balance. Transfer failed.");
+            }
+
+        }
+
+        public void UpdatePin(int newPin, int currentPin)
+        {
+            bool pinVerified = accountRepository.VerifyAccountPin(AccountNumber, currentPin);
+            if (pinVerified)
+            {
+                this.Pin = newPin;
+                Console.WriteLine("PIN updated successfully.");
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("Incorrect current PIN. PIN update failed.");
+            }
         }
     }
 }
