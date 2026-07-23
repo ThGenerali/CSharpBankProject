@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharpBankProject.src.BankConsole.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CSharpBankProject.src.BankConsole.Services
 {
-    internal class Register
+    internal class Register : UserRepository
     {
     }
 }

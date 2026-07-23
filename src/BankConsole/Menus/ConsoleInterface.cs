@@ -50,7 +50,7 @@ Would you like to do?
             return choice;
         }
 
-        public List<string> RegisterMenu()
+        public List<string> RegisterMenu() //This have to be moved to the Register class, but for now is here
         {
             Title();
             Console.WriteLine("Please enter your name: ");
@@ -64,7 +64,7 @@ Would you like to do?
             return new List<string> { name, surname, password, confirmPassword };
         }
 
-        public List<string> LoginMenu()
+        public List<string> LoginMenu() //This have to be moved to the Login class, but for now is here
         {
             Title();
             Console.WriteLine(@"
