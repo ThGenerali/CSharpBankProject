@@ -11,11 +11,9 @@ namespace CSharpBankProject.src.BankConsole.Data
     internal class UserRepository
     {
         public Dictionary<Guid, User> Users { get; private set; }
-        public Guid Id { get; init; }
         public UserRepository()
         {
             Users = new Dictionary<Guid, User>();
-            Id = Guid.NewGuid();
         }
 
         // Adds a new user account to the repository.
@@ -25,7 +23,7 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
                 
         //Verify password method checks if the provided password matches the stored password for a specific user account. It retrieves the user account based on the unique identifier (Guid) and compares the provided password with the stored password.
-        public bool VerifyLoginPasword(string username, string password)
+        public bool VerifyPassword(string username, string password)
         {   
             var user = Users.Values.FirstOrDefault(u => u.Username == username); // Retrieve the user based on the provided username
             if (user != null)
@@ -53,11 +51,24 @@ namespace CSharpBankProject.src.BankConsole.Data
         //VerifyRegisterInfo method checks if the provided registration information (name, username, and password) is valid for creating a new user account. It verifies that the name and username are not empty and that the password meets certain criteria (e.g., minimum length).
         public bool VerifyRegisterPassword(string password, string confirmPassword)
         {
-            if (confirmPassword != password)
-            {
-                return false;
-            }
+            if (confirmPassword != password) { return false; }
             return true;
+        }
+
+        public List<string> GetUserInfo(Guid Id)
+        {
+            if (Users.TryGetValue(Id, out User user))
+            {
+                List<string> userInfo = new List<string>
+                {
+                    $"Name: {user.Name}",
+                    $"User fullname: {user.Username}",
+                    $"Password: {user.Password}"
+                };
+                return userInfo;
+            } else {
+                throw new KeyNotFoundException("User not found.");
+            }
         }
 
     }
