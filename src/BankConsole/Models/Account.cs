@@ -15,10 +15,9 @@ namespace CSharpBankProject.src.BankConsole.Models
         public decimal Balance { get; set; }
         public int Pin { get; private set; }
         public User User { get; }
+        private AccountRepository accountRepository { get; }
 
-        private AccountRepository accountRepository;
-
-        public Account(Guid accountId, int accountNumber, decimal balance, int pin, User user, AccountRepository accountRepository)
+        public Account(Guid accountId, int accountNumber, decimal balance, int pin, User user)
         {
             Guid id = user.Id;
             this.AccountId = id;
@@ -26,7 +25,6 @@ namespace CSharpBankProject.src.BankConsole.Models
             this.Balance = balance;
             this.Pin = pin;
             this.User = user;
-            this.accountRepository = accountRepository;
         }
 
         enum TransactionType

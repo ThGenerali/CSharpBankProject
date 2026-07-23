@@ -88,5 +88,11 @@ namespace CSharpBankProject.src.BankConsole.Data
             while (VerifyAccountExists(accountNumber));
             return accountNumber;
         }
+
+        public Account GetAccountByUserId(Guid userId)
+        {
+            Accounts.TryGetValue(userId, out Account account);
+            return account;
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace CSharpBankProject.src.BankConsole.Models
         public string Name { get; }
         public string Username { get; init; }
         public string Password { get; private set; }
-
+        private UserRepository userRepository { get;  } 
         public User(string name, string username, string password)
         {
             this.Id = Guid.NewGuid();
@@ -23,7 +23,7 @@ namespace CSharpBankProject.src.BankConsole.Models
             this.Password = password;
         }
 
-        UserRepository userRepository = new UserRepository();
+        
 
         public void UpdatePassword(string newPassword, string currentPassword)
         {
