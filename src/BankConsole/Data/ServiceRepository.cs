@@ -40,7 +40,7 @@ namespace CSharpBankProject.src.BankConsole.Data
             CreateAccount(user, pin);
         }
 
-        public void CreateAccount(User user, int pin) 
+        public void CreateAccount(User user, int pin)
         {
             int accountNumber = accountRepository.GenerateAccountNumber();
             Account account = new Account(user.Id, accountNumber, 0m, pin, user);
@@ -60,7 +60,9 @@ namespace CSharpBankProject.src.BankConsole.Data
                 var user = userRepository.GetUser(username);
                 account = accountRepository.GetAccountByUserId(user.Id);
                 return new ArrayList[] { new ArrayList { account.User.Name, account.Balance } };
-            } else {
+            }
+            else
+            {
                 throw new UnauthorizedAccessException("Credentials are incorrect. Login failed."); ;
             }
         }
@@ -80,5 +82,22 @@ namespace CSharpBankProject.src.BankConsole.Data
             account.Transfer(targetAccountNumber, amount, pin);
         }
 
+        public void UpdatePin(int currentPin, int newPin)
+        {
+            if (newPin != null)
+            {
+                account.UpdatePin(currentPin, newPin);
+            }
+            else
+            {
+                throw new ArgumentException("Cannot update the PIN into a null PIN.");
+            }
+        }
+
+        public List<string> DisplayAccountInfo(int pin)
+        {
+            List<string> accountInfo = account.DisplayAccountInfo(pin);
+            return accountInfo;
+        }
     }
 }

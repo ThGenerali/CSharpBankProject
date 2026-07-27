@@ -39,7 +39,7 @@ Welcome to CSharp Bank!
             Title();
             Console.WriteLine(@$"
 Welcome {username}!
-Your current balance is {balance:C}
+Your current balance is {balance.ToString("0.00")}
 Would you like to do?
 1.Transactions
 2.View Account Details

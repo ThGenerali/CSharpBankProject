@@ -1,5 +1,6 @@
 ﻿using CSharpBankProject.src.BankConsole.Data;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -41,7 +42,7 @@ namespace CSharpBankProject.src.BankConsole.Models
             if (pinVerified)
             {
                 accountRepository.UpdateAccountBalance(TransactionType.Deposit.ToString(), AccountNumber, null, amount);
-                Console.WriteLine($"Deposit of {amount} successful. New balance: {Balance}");
+                Console.WriteLine($"Deposit of {amount} successful. New balance: {Balance.ToString("0.00")}");
             }
             else
             {
@@ -60,7 +61,7 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if (pinVerified)
                 {
                     accountRepository.UpdateAccountBalance(TransactionType.Withdraw.ToString(), AccountNumber, null, amount);
-                    Console.WriteLine($"Withdrawal of {amount} successful. New balance: {Balance}");
+                    Console.WriteLine($"Withdrawal of {amount} successful. New balance: {Balance.ToString("0.00")}");
                 }
                 else
                 {
@@ -89,7 +90,7 @@ namespace CSharpBankProject.src.BankConsole.Models
                     {
                         var recipient = accountRepository.FindAccountByAccountNumber(recipientAccount);
                         accountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, recipientAccount, amount);
-                        Console.WriteLine($"Transfer of {amount} to account {recipient.Balance} successful. New balance: {Balance}");
+                        Console.WriteLine($"Transfer of {amount} to account {recipient.Balance} successful. New balance: {Balance.ToString("0.00")}");
                     }
                     else
                     {
@@ -121,6 +122,20 @@ namespace CSharpBankProject.src.BankConsole.Models
             else
             {
                 throw new UnauthorizedAccessException("Incorrect current PIN. PIN update failed.");
+            }
+        }
+
+        public List<string> DisplayAccountInfo(int pin)
+        {
+            bool pinVerified = accountRepository.VerifyAccountPin(AccountNumber, pin);
+            if (pinVerified)
+            {
+                List<string> accountInfo = new List<string> { User.Name, AccountNumber.ToString(), Balance.ToString("0.00") };
+                return accountInfo;
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("Incorrect PIN. Cannot display account information.");
             }
         }
     }
