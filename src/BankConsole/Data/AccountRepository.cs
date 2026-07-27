@@ -52,11 +52,11 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
 
         //Update the balance of the account with the given account number
-        public void UpdateAccountBalance(string transactionType, int accountNumber, int? recipientAccountNumber, decimal amount)
+        public void UpdateAccountBalance(string transactionType, int accountNumber, int? recipientAccountNumber = null, decimal amount)
         {
             var account = FindAccountByAccountNumber(accountNumber);
             var recipientAccount = recipientAccountNumber.HasValue ? FindAccountByAccountNumber(recipientAccountNumber.Value) : null;
-            if (account != null)
+            if (account != null )  
             {
                 switch (transactionType)
                 {

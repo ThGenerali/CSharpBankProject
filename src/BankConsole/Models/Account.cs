@@ -17,7 +17,7 @@ namespace CSharpBankProject.src.BankConsole.Models
         public User User { get; }
         private AccountRepository accountRepository { get; }
 
-        public Account(Guid accountId, int accountNumber, decimal balance, int pin, User user)
+        public Account(Guid accountId, int accountNumber, decimal balance, int pin, User user, AccountRepository accountRepository = null)
         {
             Guid id = user.Id;
             this.AccountId = id;
@@ -25,6 +25,7 @@ namespace CSharpBankProject.src.BankConsole.Models
             this.Balance = balance;
             this.Pin = pin;
             this.User = user;
+            this.accountRepository = accountRepository ?? new AccountRepository();
         }
 
         enum TransactionType
@@ -75,7 +76,7 @@ namespace CSharpBankProject.src.BankConsole.Models
             }
         }
 
-        public void Transfer(Account? recipientAccount, decimal amount, int pin)
+        public void Transfer(int recipientAccount, decimal amount, int pin)
         {
             bool hasSufficientBalance = accountRepository.VerifyAccountBalance(AccountNumber, amount);
             if (hasSufficientBalance)
@@ -83,8 +84,17 @@ namespace CSharpBankProject.src.BankConsole.Models
                 bool pinVerified = accountRepository.VerifyAccountPin(AccountNumber, pin);
                 if (pinVerified)
                 {
-                    accountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, recipientAccount.AccountNumber, amount);
-                    Console.WriteLine($"Transfer of {amount} to account {recipientAccount.User.Name} successful. New balance: {Balance}");
+                    var recipientExists = accountRepository.VerifyAccountExists(recipientAccount);
+                    if (recipientExists)
+                    {
+                        var recipient = accountRepository.FindAccountByAccountNumber(recipientAccount);
+                        accountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, recipientAccount, amount);
+                        Console.WriteLine($"Transfer of {amount} to account {recipient.Balance} successful. New balance: {Balance}");
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Recipient account does not exist. Transfer failed.");
+                    }
                 }
                 else
                 {

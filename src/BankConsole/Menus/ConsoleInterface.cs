@@ -41,9 +41,9 @@ Welcome to CSharp Bank!
 Welcome {username}!
 Your current balance is {balance:C}
 Would you like to do?
-1.Deposit
-2.Withdraw
-3.Transfer
+1.Transactions
+2.View Account Details
+3.Change PIN
 4.Logout
 ");
             int choice = int.Parse(Console.ReadLine());

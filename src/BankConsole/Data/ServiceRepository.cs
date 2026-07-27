@@ -1,5 +1,6 @@
 ﻿using CSharpBankProject.src.BankConsole.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,14 @@ namespace CSharpBankProject.src.BankConsole.Data
     {
         private UserRepository userRepository { get; }
         private AccountRepository accountRepository { get; }
+        private Account account { get; set; }
+
+        public ServiceRepository(UserRepository userRepository = null, AccountRepository accountRepository = null, Account account = null)
+        {
+            this.userRepository = userRepository ?? new UserRepository();
+            this.accountRepository = accountRepository ?? new AccountRepository();
+            this.account = account;
+        }
 
         public bool verifyNameAndSurname(string name, string surname)
         {
@@ -36,38 +45,39 @@ namespace CSharpBankProject.src.BankConsole.Data
             int accountNumber = accountRepository.GenerateAccountNumber();
             Account account = new Account(user.Id, accountNumber, 0m, pin, user);
             accountRepository.AddAccount(user.Id, account);
-
         }
 
         public bool Verify4DigitPin(int pin)
         {
             return pin.ToString().Length == 4;
         }
-        public Account Login(string username, string password)
+        public ArrayList[] Login(string username, string password)
         {
             var userName = userRepository.VerifyUsername(username);
-            if (userName != null)
+            if (userName != null && userRepository.VerifyPassword(username, password))
             {
-                if(userRepository.VerifyPassword(username, password))
-                {
-                    Console.WriteLine("Login successful.");
-                    var user = userRepository.GetUser(username);
-                   return accountRepository.GetAccountByUserId(user.Id);
-                }
-                else
-                {
-                    throw new UnauthorizedAccessException("Incorrect password. Login failed.");
-                }
-            }
-            else
-            {
-                throw new Exception("User not found. Login failed.");
+                Console.WriteLine("Login successful.");
+                var user = userRepository.GetUser(username);
+                account = accountRepository.GetAccountByUserId(user.Id);
+                return new ArrayList[] { new ArrayList { account.User.Name, account.Balance } };
+            } else {
+                throw new UnauthorizedAccessException("Credentials are incorrect. Login failed."); ;
             }
         }
 
-        public void Transaction(int accountNumber, int pin, string transactionType, decimal amount, int? recipientAccountNumber = null)
+        public void Deposit(decimal amount, int pin)
         {
+            account.Deposit(amount, pin);
+        }
 
+        public void Withdraw(decimal amount, int pin)
+        {
+            account.Withdraw(amount, pin);
+        }
+
+        public void Transfer(int targetAccountNumber, decimal amount, int pin)
+        {
+            account.Transfer(targetAccountNumber, amount, pin);
         }
 
     }
