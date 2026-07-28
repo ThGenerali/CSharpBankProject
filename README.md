@@ -32,6 +32,33 @@ The project is designed to evolve over multiple versions, gradually introducing 
 | 3.0 | ⏳ |
 | 4.0 | ⏳ |
 
+### Version 1.0
+
+- [] Console
+- [] OOP
+- [] In-memory data
+
+### Version 1.1
+
+- [ ] Transaction History
+
+### Version 1.2
+
+- [ ] JSON Persistence
+- [ ] Wallet Management
+
+### Version 2.0
+
+- [ ] SQL Server
+
+### Version 3.0
+
+- [ ] REST API
+
+### Version 4.0
+
+- [ ] Web Interface
+
 ## 💻 Technologies
 - C#
 - .NET
