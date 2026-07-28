@@ -35,17 +35,17 @@ namespace CSharpBankProject.src.BankConsole.Data
 
         //VeryfyUsername method checks if the provided username exists in the user repository. It iterates through the collection of user accounts and compares the provided username with the usernames of existing users.
 
-        public string VerifyUsername(string username)
+        public bool VerifyUsername(string username)
         {
             //Iterate through the collection of user accounts and check if the provided username exists
             foreach (var user in Users.Values) 
             {
-                if (user.Username == username)
+                if (user.Username.Trim() == username.Trim())
                 {
-                    return user.Name;
+                    return true;
                 }
             }
-            throw new Exception("User not found."); 
+            return false;
         }
 
         public User GetUser(string username)

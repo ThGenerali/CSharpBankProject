@@ -63,7 +63,7 @@ namespace CSharpBankProject.src.BankConsole.Services
             }
         }
 
-        public ArrayList[] LoginMenu()
+        public (string UserName, string Balance) LoginMenu()
         {
             Console.WriteLine(@"
 Please enter your name and surname: 
@@ -129,7 +129,7 @@ Please select a transaction type:
             Console.WriteLine("Please enter your PIN to view account details: ");
             int pin = int.Parse(Console.ReadLine());
             var accountDetails = serviceRepository.DisplayAccountInfo(pin);
-            Console.WriteLine($"Account Details:\nName: {accountDetails[0]}\nAccount Number: {accountDetails[1]}\nBalance: {accountDetails[2]}");
+            Console.WriteLine($"Account Details:\nName: {accountDetails.UserName}\nAccount Number: {accountDetails.AccountNumber}\nBalance: {accountDetails.Balance}");
             Console.WriteLine("Press any key to return to the main menu.");
             Console.ReadKey();
         }

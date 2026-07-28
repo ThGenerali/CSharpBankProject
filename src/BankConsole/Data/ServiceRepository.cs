@@ -5,21 +5,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CSharpBankProject.src.BankConsole.Data.ServiceRepository;
 
 namespace CSharpBankProject.src.BankConsole.Data
 {
     internal class ServiceRepository
     {
-        private UserRepository userRepository { get; }
-        private AccountRepository accountRepository { get; }
-        private Account account { get; set; }
+        private UserRepository userRepository;
+        private AccountRepository accountRepository;
 
-        public ServiceRepository(UserRepository userRepository = null, AccountRepository accountRepository = null, Account account = null)
+
+        public class AccountSession
         {
-            this.userRepository = userRepository ?? new UserRepository();
-            this.accountRepository = accountRepository ?? new AccountRepository();
-            this.account = account;
+            public Account account { get; }
+            public AccountSession(Account account)
+            {
+                this.account = account;
+            }
         }
+
+        public AccountSession accountSession;
 
         public bool verifyNameAndSurname(string name, string surname)
         {
@@ -51,15 +56,15 @@ namespace CSharpBankProject.src.BankConsole.Data
         {
             return pin.ToString().Length == 4;
         }
-        public ArrayList[] Login(string username, string password)
+        public (string UserName, string Balance) Login(string username, string password)
         {
             var userName = userRepository.VerifyUsername(username);
-            if (userName != null && userRepository.VerifyPassword(username, password))
+            if (userName  && userRepository.VerifyPassword(username, password))
             {
                 Console.WriteLine("Login successful.");
                 var user = userRepository.GetUser(username);
-                account = accountRepository.GetAccountByUserId(user.Id);
-                return new ArrayList[] { new ArrayList { account.User.Name, account.Balance } };
+                accountSession = new AccountSession(accountRepository.GetAccountByUserId(user.Id));
+                return (user.Username, accountSession.account.BalanceCurrency);
             }
             else
             {
@@ -69,24 +74,24 @@ namespace CSharpBankProject.src.BankConsole.Data
 
         public void Deposit(decimal amount, int pin)
         {
-            account.Deposit(amount, pin);
+            accountSession.account.Deposit(amount, pin);
         }
 
         public void Withdraw(decimal amount, int pin)
         {
-            account.Withdraw(amount, pin);
+            accountSession.account.Withdraw(amount, pin);
         }
 
         public void Transfer(int targetAccountNumber, decimal amount, int pin)
         {
-            account.Transfer(targetAccountNumber, amount, pin);
+            accountSession.account.Transfer(targetAccountNumber, amount, pin);
         }
 
-        public void UpdatePin(int currentPin, int newPin)
+        public void UpdatePin(int currentPin, int? newPin)
         {
             if (newPin != null)
             {
-                account.UpdatePin(currentPin, newPin);
+                accountSession.account.UpdatePin(currentPin, newPin.Value);
             }
             else
             {
@@ -94,10 +99,10 @@ namespace CSharpBankProject.src.BankConsole.Data
             }
         }
 
-        public List<string> DisplayAccountInfo(int pin)
+        public (string UserName, int AccountNumber, string Balance) DisplayAccountInfo(int pin)
         {
-            List<string> accountInfo = account.DisplayAccountInfo(pin);
-            return accountInfo;
+            var accountInfo = accountSession.account.DisplayAccountInfo(pin);
+            return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance);
         }
     }
 }

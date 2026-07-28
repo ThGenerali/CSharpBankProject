@@ -34,7 +34,11 @@ namespace CSharpBankProject.src.BankConsole.Data
         //Find and return the account with the given account number from the Accounts dictionary
         public Account FindAccountByAccountNumber(int accountNumber)
         {
-            return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
+            if (VerifyAccountExists(accountNumber))
+            {
+                return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
+            }
+            throw new KeyNotFoundException("Account not found.");
         }
 
         //Verify if the PIN of the account with the given account number matches the provided PIN
@@ -52,7 +56,7 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
 
         //Update the balance of the account with the given account number
-        public void UpdateAccountBalance(string transactionType, int accountNumber, int? recipientAccountNumber = null, decimal amount)
+        public void UpdateAccountBalance(string transactionType, int accountNumber, decimal amount, int? recipientAccountNumber = null)
         {
             var account = FindAccountByAccountNumber(accountNumber);
             var recipientAccount = recipientAccountNumber.HasValue ? FindAccountByAccountNumber(recipientAccountNumber.Value) : null;
