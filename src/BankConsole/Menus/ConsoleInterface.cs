@@ -39,41 +39,15 @@ Welcome to CSharp Bank!
             Title();
             Console.WriteLine(@$"
 Welcome {username}!
-Your current balance is {balance:C}
+Your current balance is {balance.ToString("0.00")}
 Would you like to do?
-1.Deposit
-2.Withdraw
-3.Transfer
+1.Transactions
+2.View Account Details
+3.Change PIN
 4.Logout
 ");
             int choice = int.Parse(Console.ReadLine());
             return choice;
-        }
-
-        public List<string> RegisterMenu() //This have to be moved to the Register class, but for now is here
-        {
-            Title();
-            Console.WriteLine("Please enter your name: ");
-            string name = Console.ReadLine();
-            Console.WriteLine("Please enter your surname: ");
-            string surname = Console.ReadLine();
-            Console.WriteLine("Please enter your password: ");
-            string password = Console.ReadLine();
-            Console.WriteLine("Please confirm your password: ");
-            string confirmPassword = Console.ReadLine();
-            return new List<string> { name, surname, password, confirmPassword };
-        }
-
-        public List<string> LoginMenu() //This have to be moved to the Login class, but for now is here
-        {
-            Title();
-            Console.WriteLine(@"
-Please enter your name and surname: 
-(Remeber to add a space between them and don't at the final)");
-            string nameLogin = Console.ReadLine();
-            Console.WriteLine("Please enter your password: ");
-            string password = Console.ReadLine();
-            return new List<string> { nameLogin, password };
         }
 
     }

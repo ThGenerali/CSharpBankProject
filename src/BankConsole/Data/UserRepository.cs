@@ -40,7 +40,7 @@ namespace CSharpBankProject.src.BankConsole.Data
             //Iterate through the collection of user accounts and check if the provided username exists
             foreach (var user in Users.Values) 
             {
-                if (user.Username == username)
+                if (user.Username.Trim() == username.Trim())
                 {
                     return true;
                 }
@@ -48,11 +48,10 @@ namespace CSharpBankProject.src.BankConsole.Data
             return false;
         }
 
-        //VerifyRegisterInfo method checks if the provided registration information (name, username, and password) is valid for creating a new user account. It verifies that the name and username are not empty and that the password meets certain criteria (e.g., minimum length).
-        public bool VerifyRegisterPassword(string password, string confirmPassword)
+        public User GetUser(string username)
         {
-            if (confirmPassword != password) { return false; }
-            return true;
+            var user = Users.Values.FirstOrDefault(u => u.Username == username);
+            return user;
         }
 
         public List<string> GetUserInfo(Guid Id)

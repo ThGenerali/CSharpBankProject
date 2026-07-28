@@ -14,16 +14,17 @@ namespace CSharpBankProject.src.BankConsole.Models
         public string Name { get; }
         public string Username { get; init; }
         public string Password { get; private set; }
-
-        public User(string name, string username, string password)
+        private UserRepository userRepository { get;  } 
+        public User(string name, string username, string password, UserRepository userRepository = null)
         {
             this.Id = Guid.NewGuid();
             this.Name = name;
             this.Username = username;
             this.Password = password;
+            this.userRepository = userRepository ?? new UserRepository();
         }
 
-        UserRepository userRepository = new UserRepository();
+        
 
         public void UpdatePassword(string newPassword, string currentPassword)
         {
