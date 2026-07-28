@@ -18,7 +18,7 @@ namespace CSharpBankProject.src.BankConsole.Menus
 ██║░░╚██╗░╚═══██╗██╔══██║██╔══██║██╔══██╗██╔═══╝░  ██╔══██╗██╔══██║██║╚████║██╔═██╗░
 ╚██████╔╝██████╔╝██║░░██║██║░░██║██║░░██║██║░░░░░  ██████╦╝██║░░██║██║░╚███║██║░╚██╗
 ░╚═════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░░░  ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝
-\n");
+");
         }
 
         public int MainMenu()
@@ -34,12 +34,12 @@ Welcome to CSharp Bank!
             return choice;
         }
 
-        public int AccountMenu(string username, decimal balance)
+        public int AccountMenu(string username, string balance)
         {
             Title();
             Console.WriteLine(@$"
 Welcome {username}!
-Your current balance is {balance.ToString("0.00")}
+Your current balance is {balance}
 Would you like to do?
 1.Transactions
 2.View Account Details

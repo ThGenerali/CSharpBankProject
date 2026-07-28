@@ -11,8 +11,8 @@ namespace CSharpBankProject.src.BankConsole.Data
 {
     internal class ServiceRepository
     {
-        private UserRepository userRepository;
-        private AccountRepository accountRepository;
+        private UserRepository userRepository = new UserRepository();
+        private AccountRepository accountRepository = new AccountRepository();
 
 
         public class AccountSession
@@ -40,7 +40,8 @@ namespace CSharpBankProject.src.BankConsole.Data
 
         public void RegisterUser(string name, string username, string password, int pin)
         {
-            User user = new User(name, username, password);
+            Guid userId = Guid.NewGuid();
+            User user = new User(userId, name, username, password, userRepository);
             userRepository.AddUser(user.Id, user);
             CreateAccount(user, pin);
         }
@@ -48,10 +49,20 @@ namespace CSharpBankProject.src.BankConsole.Data
         public void CreateAccount(User user, int pin)
         {
             int accountNumber = accountRepository.GenerateAccountNumber();
-            Account account = new Account(user.Id, accountNumber, 0m, pin, user);
-            accountRepository.AddAccount(user.Id, account);
+            Account account = new Account(accountNumber, 0m, pin, user, accountRepository);
+            accountRepository.AddAccount(account.User.Id, account);
         }
 
+        public string GetUserNameByAccountNumber(int accountNumber)
+        {
+            var account = accountRepository.FindAccountByAccountNumber(accountNumber);
+            if (account != null)
+            {
+                var user = userRepository.GetUserByUserName(account.User.Name);
+                return user.Username;
+            }
+            throw new KeyNotFoundException("Account not found.");
+        }
         public bool Verify4DigitPin(int pin)
         {
             return pin.ToString().Length == 4;
@@ -61,14 +72,13 @@ namespace CSharpBankProject.src.BankConsole.Data
             var userName = userRepository.VerifyUsername(username);
             if (userName  && userRepository.VerifyPassword(username, password))
             {
-                Console.WriteLine("Login successful.");
-                var user = userRepository.GetUser(username);
+                var user = userRepository.GetUserByUserName(username);
                 accountSession = new AccountSession(accountRepository.GetAccountByUserId(user.Id));
                 return (user.Username, accountSession.account.BalanceCurrency);
             }
             else
             {
-                throw new UnauthorizedAccessException("Credentials are incorrect. Login failed."); ;
+                return default;
             }
         }
 
@@ -95,14 +105,21 @@ namespace CSharpBankProject.src.BankConsole.Data
             }
             else
             {
-                throw new ArgumentException("Cannot update the PIN into a null PIN.");
+                Console.WriteLine("Cannot update the PIN into a null PIN.");
             }
         }
 
         public (string UserName, int AccountNumber, string Balance) DisplayAccountInfo(int pin)
         {
             var accountInfo = accountSession.account.DisplayAccountInfo(pin);
-            return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance);
+            if (accountInfo != default)
+            {
+                return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance);
+            }
+            else
+            {
+                return default;
+            }
         }
     }
 }

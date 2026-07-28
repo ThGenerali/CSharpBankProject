@@ -17,10 +17,7 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
 
         // Adds a new user account to the repository.
-        public void AddUser(Guid Id, User user)
-        {
-            Users.Add(Id, user);
-        }
+        public void AddUser(Guid Id, User user) { Users.Add(Id, user); }
                 
         //Verify password method checks if the provided password matches the stored password for a specific user account. It retrieves the user account based on the unique identifier (Guid) and compares the provided password with the stored password.
         public bool VerifyPassword(string username, string password)
@@ -48,28 +45,11 @@ namespace CSharpBankProject.src.BankConsole.Data
             return false;
         }
 
-        public User GetUser(string username)
+        public User GetUserByUserName(string username)
         {
             var user = Users.Values.FirstOrDefault(u => u.Username == username);
             return user;
         }
-
-        public List<string> GetUserInfo(Guid Id)
-        {
-            if (Users.TryGetValue(Id, out User user))
-            {
-                List<string> userInfo = new List<string>
-                {
-                    $"Name: {user.Name}",
-                    $"User fullname: {user.Username}",
-                    $"Password: {user.Password}"
-                };
-                return userInfo;
-            } else {
-                throw new KeyNotFoundException("User not found.");
-            }
-        }
-
     }
 }
                                                 
