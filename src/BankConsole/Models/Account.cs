@@ -72,6 +72,7 @@ namespace CSharpBankProject.src.BankConsole.Models
                     if (recipientExists)
                     {
                         var recipient = AccountRepository.FindAccountByAccountNumber(recipientAccount);
+                        if (recipient == null) { Console.WriteLine("Recipient account not found. Transfer failed."); return; }
                         AccountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, amount, recipientAccount);
                         Console.WriteLine($"Transfer of {amount} to {recipient.User.Username}'s account successful. New balance: {BalanceCurrency}");
                     } else { Console.WriteLine("Recipient account does not exist. Transfer failed."); }

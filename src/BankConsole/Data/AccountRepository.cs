@@ -46,6 +46,7 @@ namespace CSharpBankProject.src.BankConsole.Data
 
         public Account FindAccountByAccountNumber(int accountNumber)
         {
+            if(!VerifyAccountExists(accountNumber)) return null;
             return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
         }
 
