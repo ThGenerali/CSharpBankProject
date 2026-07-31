@@ -76,15 +76,18 @@ namespace CSharpBankProject.src.BankConsole.Services
             if (userAccount == default)
             {
                 Console.WriteLine("Invalid credentials. Please try again.");
+                System.Threading.Thread.Sleep(1500);
+                Console.Clear();
                 return default;
             } else
             {
                 Console.WriteLine("Login successful.");
+                System.Threading.Thread.Sleep(1500);
+                Console.Clear();
                 return userAccount;
             }
                 
-            System.Threading.Thread.Sleep(3000);
-            Console.Clear();
+            
             
         }
 
@@ -97,6 +100,7 @@ namespace CSharpBankProject.src.BankConsole.Services
 Please select a transaction type:
 ");
             int transactionType = int.Parse(Console.ReadLine());
+            Console.Clear();
             switch (transactionType)
             {
                 case 1:
@@ -179,6 +183,12 @@ Please select a transaction type:
             } else { Console.WriteLine("Invalid PIN. Unable to retrieve account details."); }
             Console.WriteLine("Press any key to return to the main menu.");
             Console.ReadKey();
+            Console.Clear();      
+        }
+
+        public string GetUpdatedBalance()
+        {
+            return serviceRepository.GetUpdatedBalance();
         }
     }
 }

@@ -121,5 +121,10 @@ namespace CSharpBankProject.src.BankConsole.Data
                 return default;
             }
         }
+
+        public string GetUpdatedBalance()
+        {
+            return accountSession.account.BalanceCurrency;
+        }
     }
 }

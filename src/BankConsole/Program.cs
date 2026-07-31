@@ -19,11 +19,10 @@ namespace CSharpBankProject.src.BankConsole
                     case 1:
                         Console.Clear();
                         var loginService = services.LoginMenu();
-                        int accountMenuChoice = 0;
+                        int accountMenuChoice = loginService != default ? consoleMenu.AccountMenu(loginService.UserName, loginService.Balance) : 4;
                         while (accountMenuChoice != 4)
                         {
-                            //Customer menu isn't updating balance after transaction, added a check to fix it next time.
-                            accountMenuChoice = loginService != default ? consoleMenu.AccountMenu(loginService.UserName, loginService.Balance) : 4;
+                            
                             switch (accountMenuChoice)
                             {
                                 case 1:
@@ -49,6 +48,7 @@ namespace CSharpBankProject.src.BankConsole
                                     System.Threading.Thread.Sleep(1000);
                                     break;
                             }
+                            accountMenuChoice = consoleMenu.AccountMenu(loginService.UserName, services.GetUpdatedBalance());
                         }
                         break;
                     case 2:

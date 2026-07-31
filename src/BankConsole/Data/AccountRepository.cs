@@ -68,7 +68,7 @@ namespace CSharpBankProject.src.BankConsole.Data
                     case "Withdraw":
                         account.Balance -= amount;
                         break;
-                    case "Transfer":
+                    case "Transfer" when recipientAccount != null:
                         account.Balance -= amount;
                         recipientAccount.Balance += amount;
                         break;

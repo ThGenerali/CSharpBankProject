@@ -16,7 +16,7 @@ namespace CSharpBankProject.src.BankConsole.Models
         public int Pin { get; private set; }
         public User User { get; }
         private AccountRepository AccountRepository { get; }
-        public string BalanceCurrency => this.Balance.ToString("0.00");
+        public string BalanceCurrency => Balance.ToString("0.00"); 
 
         public Account(int accountNumber, decimal balance, int pin, User user, AccountRepository accountRepository)
         { 
@@ -59,7 +59,6 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if (pinVerified)
                 {
                     AccountRepository.UpdateAccountBalance(TransactionType.Withdraw.ToString(), AccountNumber, amount);
-                    Console.WriteLine($"Withdrawal of {amount} successful. New balance: {BalanceCurrency}");
                 }
                 else
                 {
@@ -128,7 +127,7 @@ namespace CSharpBankProject.src.BankConsole.Models
             bool pinVerified = AccountRepository.VerifyAccountPin(User.Id, pin);
             if (pinVerified)
             {
-                return (User.Name, AccountNumber, BalanceCurrency);
+                return (User.Usern                          ame, AccountNumber, BalanceCurrency);
             }
             else
             {
