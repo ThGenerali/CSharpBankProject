@@ -3,23 +3,30 @@ using CSharpBankProject.src.BankConsole.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+
+
 
 namespace CSharpBankProject.src.BankConsole.Services
 {
     internal class Services
     {
+        TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
         private ServiceRepository serviceRepository = new ServiceRepository();
 
         public void RegisterUser()
         {
             Console.WriteLine("Please enter your name: ");
             string name = Console.ReadLine();
+            name = textInfo.ToTitleCase(name.ToLower());
             Console.Clear();
             Console.WriteLine("Please enter your surname: ");
             string surname = Console.ReadLine();
+            surname = textInfo.ToTitleCase(surname.ToLower());
             Console.Clear();
             if (serviceRepository.verifyNameAndSurname(name, surname))
             {
@@ -86,20 +93,18 @@ namespace CSharpBankProject.src.BankConsole.Services
                 Console.Clear();
                 return userAccount;
             }
-                
-            
-            
         }
 
-        public void TransactionMenu()
+        public void Transaction()
         {
             Console.WriteLine(@"
 1. Deposit
 2. Withdraw
 3. Transfer
+4. Cancel Transaction
 Please select a transaction type:
 ");
-            int transactionType = int.Parse(Console.ReadLine());
+            int transactionType = int.Parse(Console.ReadKey().KeyChar.ToString());
             Console.Clear();
             switch (transactionType)
             {
@@ -137,30 +142,40 @@ Please select a transaction type:
                     int targetAccountNumber = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
                     var targetAccountName = serviceRepository.GetUserNameByAccountNumber(targetAccountNumber);
-                    Console.WriteLine($"You are transferring to {targetAccountName}. Are you sure? (y/n)");
-                    char confirmation = Console.ReadKey().KeyChar;
-                    Console.Clear();
-                    if (char.ToLower(confirmation) != 'y')
-                    { 
-                        Console.WriteLine("Transfer cancelled.");
-                        System.Threading.Thread.Sleep(2000);
+                    if (!string.IsNullOrEmpty(targetAccountName))
+                    {
+                        Console.WriteLine($"You are transferring to {targetAccountName}. Are you sure? (y/n)");
+                        char confirmation = Console.ReadKey().KeyChar;
                         Console.Clear();
+                        if (char.ToLower(confirmation) != 'y')
+                        {
+                            Console.WriteLine("Transfer cancelled.");
+                            System.Threading.Thread.Sleep(2000);
+                            Console.Clear();
+                            break;
+                        }
+                        Console.WriteLine("Please enter the amount: ");
+                        decimal transferAmount = Convert.ToDecimal(Console.ReadLine());
+                        Console.Clear();
+                        Console.WriteLine("Please enter your PIN: ");
+                        int transferPin = Convert.ToInt32(Console.ReadLine());
+                        Console.Clear();
+                        Console.WriteLine("Processing transfer...");
+                        System.Threading.Thread.Sleep(2000);
+                        serviceRepository.Transfer(targetAccountNumber, transferAmount, transferPin);
+                        Console.Clear();
+                    } else { 
+                        Console.WriteLine("Account not found! Transferation canceled."); 
                         break;
                     }
-                    Console.WriteLine("Please enter the amount: ");
-                    decimal transferAmount = Convert.ToDecimal(Console.ReadLine());
-                    Console.Clear();
-                    Console.WriteLine("Please enter your PIN: ");
-                    int transferPin = Convert.ToInt32(Console.ReadLine());
-                    Console.Clear();
-                    Console.WriteLine("Processing transfer...");
-                    System.Threading.Thread.Sleep(2000);
-                    serviceRepository.Transfer(targetAccountNumber, transferAmount, transferPin);
-                    Console.Clear();
+                        break;
+                case 4:
+                    Console.WriteLine("Transaction cancelled.");
+                    System.Threading.Thread.Sleep(1000);
                     break;
                 default:
                     Console.WriteLine("Invalid selection. Please try again.");
-                    System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(1000);
                     Console.Clear();
                     break;
             }
@@ -168,20 +183,30 @@ Please select a transaction type:
         public void ChangePinMenu()
         {
             Console.WriteLine("Please enter your current PIN: ");
-            int currentPin = int.Parse(Console.ReadLine());
+            int currentPin = int.TryParse(Console.ReadLine(), out int tempCurrentPin) ? tempCurrentPin : 0;
             Console.WriteLine("Please enter your new PIN: ");
-            int newPin = int.Parse(Console.ReadLine());
-            serviceRepository.UpdatePin(currentPin, newPin);
+            int newPin = int.TryParse(Console.ReadLine(), out int tempNewPin) ? tempNewPin : 0;
+            if (serviceRepository.Verify4DigitPin(newPin) && serviceRepository.Verify4DigitPin(currentPin))
+            {
+                Console.WriteLine("Processing PIN change...");
+                System.Threading.Thread.Sleep(1000);
+                serviceRepository.UpdatePin(currentPin, newPin);
+            } else { Console.WriteLine("Invalid PIN. Please ensure you enter your current and new PIN correctly."); }
+            Thread.Sleep(1500);
         }
 
         public void ShowAccountDetailsMenu()
         {
             Console.WriteLine("Please enter your PIN to view account details: ");
             int pin = int.Parse(Console.ReadLine());
+            Console.Clear();
+            Console.WriteLine("Retrieving account details...");
+            System.Threading.Thread.Sleep(2000);
+            Console.Clear();
             var accountDetails = serviceRepository.DisplayAccountInfo(pin);
-            if (accountDetails != default) {Console.WriteLine($"Account Details:\nName: {accountDetails.UserName}\nAccount Number: {accountDetails.AccountNumber}\nBalance: {accountDetails.Balance}");
+            if (accountDetails != default) {Console.WriteLine($"Account Details:\n\nName: {accountDetails.UserName}\nAccount Number: {accountDetails.AccountNumber}\nBalance: {accountDetails.Balance}");
             } else { Console.WriteLine("Invalid PIN. Unable to retrieve account details."); }
-            Console.WriteLine("Press any key to return to the main menu.");
+            Console.WriteLine("\nPress any key to return to the main menu.");
             Console.ReadKey();
             Console.Clear();      
         }

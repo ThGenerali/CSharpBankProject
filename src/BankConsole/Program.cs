@@ -12,58 +12,54 @@ namespace CSharpBankProject.src.BankConsole
         {
             int menuChoice = 0;
             while (menuChoice != 3)
-            { 
+            {
                 menuChoice = consoleMenu.MainMenu();
+                Console.Clear();
                 switch (menuChoice)
                 {
                     case 1:
-                        Console.Clear();
                         var loginService = services.LoginMenu();
                         int accountMenuChoice = loginService != default ? consoleMenu.AccountMenu(loginService.UserName, loginService.Balance) : 4;
+                        Console.Clear();
                         while (accountMenuChoice != 4)
                         {
-                            
                             switch (accountMenuChoice)
                             {
                                 case 1:
-                                    Console.Clear();
-                                    services.TransactionMenu();
+                                    services.Transaction();
                                     break;
                                 case 2:
-                                    Console.Clear();
                                     services.ShowAccountDetailsMenu();
                                     break;
                                 case 3:
-                                    Console.Clear();
                                     services.ChangePinMenu();
+                                    Console.Clear();
                                     break;
                                 case 4:
-                                    Console.Clear();
                                     Console.WriteLine("Logging out...");
                                     System.Threading.Thread.Sleep(1000);
                                     break;
                                 default:
-                                    Console.Clear();
                                     Console.WriteLine("Invalid choice. Please try again.");
                                     System.Threading.Thread.Sleep(1000);
                                     break;
                             }
                             accountMenuChoice = consoleMenu.AccountMenu(loginService.UserName, services.GetUpdatedBalance());
+                            Console.Clear();
                         }
                         break;
                     case 2:
-                        Console.Clear();
                         services.RegisterUser();
                         break;
                     case 3:
-                        Console.Clear();
                         Console.WriteLine("See you later!");
                         System.Threading.Thread.Sleep(1000);
+                        Console.Clear();
                         break;
                     default:
-                        Console.Clear();
                         Console.WriteLine("Invalid choice. Please try again.");
                         System.Threading.Thread.Sleep(1000);
+                        Console.Clear();
                         break;
                 }
             }

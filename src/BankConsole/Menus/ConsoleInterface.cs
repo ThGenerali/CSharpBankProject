@@ -30,7 +30,7 @@ Welcome to CSharp Bank!
 2. Register
 3. Exit
 ");
-            int choice = int.Parse(Console.ReadLine());
+            int choice = int.TryParse(Console.ReadKey().KeyChar.ToString(), out int result) ? result : 0;
             return choice;
         }
 
@@ -46,7 +46,7 @@ Would you like to do?
 3.Change PIN
 4.Logout
 ");
-            int choice = int.Parse(Console.ReadLine());
+            int choice = int.TryParse(Console.ReadKey().KeyChar.ToString(), out int result) ? result : 0;
             return choice;
         }
 

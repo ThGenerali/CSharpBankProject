@@ -41,16 +41,11 @@ namespace CSharpBankProject.src.BankConsole.Models
             {
                 AccountRepository.UpdateAccountBalance(TransactionType.Deposit.ToString(), AccountNumber, amount);
                 Console.WriteLine($"Deposit of {amount} successful. New balance: {BalanceCurrency}");
-            }
-            else
-            {
-                // Handle incorrect PIN
-                Console.WriteLine("Incorrect PIN. Deposit failed.");
-            }
-
+            } else { Console.WriteLine("Incorrect PIN. Deposit failed."); }
+            Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
         }
 
-        public void Withdraw(decimal amount, int pin)
+        public void Withdraw (decimal amount, int pin)
         {
             bool hasSufficientBalance = AccountRepository.VerifyAccountBalance(User.Id, amount);
             if (hasSufficientBalance)
@@ -59,19 +54,10 @@ namespace CSharpBankProject.src.BankConsole.Models
                 if (pinVerified)
                 {
                     AccountRepository.UpdateAccountBalance(TransactionType.Withdraw.ToString(), AccountNumber, amount);
-                }
-                else
-                {
-                    // Handle incorrect PIN
-                    Console.WriteLine("Incorrect PIN. Withdrawal failed.");
-
-                }
-            }
-            else
-            {
-                // Handle insufficient balance
-                Console.WriteLine("Insufficient balance. Withdrawal failed.");
-            }
+                    Console.WriteLine($"Withdrawal of {amount} successful. New balance: {BalanceCurrency}");
+                } else { Console.WriteLine("Incorrect PIN. Withdrawal failed.");}
+            } else { Console.WriteLine("Insufficient balance. Withdrawal failed."); }
+            Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
         }
 
         public void Transfer(int recipientAccount, decimal amount, int pin)
@@ -88,27 +74,14 @@ namespace CSharpBankProject.src.BankConsole.Models
                         var recipient = AccountRepository.FindAccountByAccountNumber(recipientAccount);
                         AccountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, amount, recipientAccount);
                         Console.WriteLine($"Transfer of {amount} to {recipient.User.Username}'s account successful. New balance: {BalanceCurrency}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Recipient account does not exist. Transfer failed.");
-                    }
-                }
-                else
-                {
-                    // Handle incorrect PIN
-                    Console.WriteLine("Incorrect PIN. Transfer failed.");
-                }
-            }
-            else
-            {
-                // Handle insufficient balance
-                Console.WriteLine("Insufficient balance. Transfer failed.");
-            }
+                    } else { Console.WriteLine("Recipient account does not exist. Transfer failed."); }
+                } else { Console.WriteLine("Incorrect PIN. Transfer failed."); }
+            } else { Console.WriteLine("Insufficient balance. Transfer failed."); }
+            Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
 
         }
 
-        public void UpdatePin(int newPin, int currentPin)
+        public void UpdatePin(int currentPin, int newPin)
         {
             bool pinVerified = AccountRepository.VerifyAccountPin(User.Id, currentPin);
             if (pinVerified)
@@ -120,19 +93,13 @@ namespace CSharpBankProject.src.BankConsole.Models
             {
                 Console.WriteLine("Incorrect current PIN. PIN update failed.");
             }
+            Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
         }
 
         public (string UserName, int AccountNumber, string Balance) DisplayAccountInfo(int pin)
         {
             bool pinVerified = AccountRepository.VerifyAccountPin(User.Id, pin);
-            if (pinVerified)
-            {
-                return (User.Usern                          ame, AccountNumber, BalanceCurrency);
-            }
-            else
-            {
-                return default;
-            }
+            if (pinVerified) { return (User.Username, AccountNumber, BalanceCurrency); } else { return default; }
         }
     }
 }
