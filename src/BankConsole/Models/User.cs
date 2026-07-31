@@ -14,41 +14,26 @@ namespace CSharpBankProject.src.BankConsole.Models
         public string Name { get; }
         public string Username { get; init; }
         public string Password { get; private set; }
-        private UserRepository userRepository { get;  } 
-        public User(string name, string username, string password, UserRepository userRepository = null)
+        private UserRepository UserRepository { get; }
+        public User(Guid Id, string name, string username, string password, UserRepository userRepository)
         {
-            this.Id = Guid.NewGuid();
+            this.Id = Id;
             this.Name = name;
             this.Username = username;
             this.Password = password;
-            this.userRepository = userRepository ?? new UserRepository();
+            this.UserRepository = userRepository;
         }
 
         
 
         public void UpdatePassword(string newPassword, string currentPassword)
         {
-            if (userRepository.VerifyPassword(this.Username, currentPassword))
+            if (UserRepository.VerifyPassword(this.Username, currentPassword))
             {
                 this.Password = newPassword;
             } else {
-                throw new UnauthorizedAccessException("Current password is incorrect. Password update failed.");
+                Console.WriteLine("Current password is incorrect. Password update failed.");
             }
         } 
-        
-        public void PrintUserInfo(string password)
-        {
-            if (userRepository.VerifyPassword(this.Username, password))
-            {
-                List<string> userInfo = userRepository.GetUserInfo(this.Id);
-                foreach (var info in userInfo)
-                {
-                    Console.WriteLine(info);
-                }
-            } else {
-                throw new UnauthorizedAccessException("Incorrect password. Cannot display user information.");
-            }
-        }
-
     }
 }

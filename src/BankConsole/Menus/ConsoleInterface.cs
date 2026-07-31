@@ -18,7 +18,7 @@ namespace CSharpBankProject.src.BankConsole.Menus
 ██║░░╚██╗░╚═══██╗██╔══██║██╔══██║██╔══██╗██╔═══╝░  ██╔══██╗██╔══██║██║╚████║██╔═██╗░
 ╚██████╔╝██████╔╝██║░░██║██║░░██║██║░░██║██║░░░░░  ██████╦╝██║░░██║██║░╚███║██║░╚██╗
 ░╚═════╝░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░░░  ╚═════╝░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝
-\n");
+");
         }
 
         public int MainMenu()
@@ -30,23 +30,23 @@ Welcome to CSharp Bank!
 2. Register
 3. Exit
 ");
-            int choice = int.Parse(Console.ReadLine());
+            int choice = int.TryParse(Console.ReadKey().KeyChar.ToString(), out int result) ? result : 0;
             return choice;
         }
 
-        public int AccountMenu(string username, decimal balance)
+        public int AccountMenu(string username, string balance)
         {
             Title();
             Console.WriteLine(@$"
 Welcome {username}!
-Your current balance is {balance.ToString("0.00")}
+Your current balance is {balance}
 Would you like to do?
 1.Transactions
 2.View Account Details
 3.Change PIN
 4.Logout
 ");
-            int choice = int.Parse(Console.ReadLine());
+            int choice = int.TryParse(Console.ReadKey().KeyChar.ToString(), out int result) ? result : 0;
             return choice;
         }
 

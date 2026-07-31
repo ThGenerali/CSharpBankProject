@@ -11,7 +11,6 @@ namespace CSharpBankProject.src.BankConsole.Data
     {
         //properties
         private Dictionary<Guid, Account> Accounts { get; set; }
-
         //methods
         //constructor
         public AccountRepository()
@@ -31,30 +30,30 @@ namespace CSharpBankProject.src.BankConsole.Data
             return Accounts.Values.Any(a => a.AccountNumber == accountNumber);
         }
 
-        //Find and return the account with the given account number from the Accounts dictionary
-        public Account FindAccountByAccountNumber(int accountNumber)
-        {
-            if (VerifyAccountExists(accountNumber))
-            {
-                return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
-            }
-            throw new KeyNotFoundException("Account not found.");
-        }
-
         //Verify if the PIN of the account with the given account number matches the provided PIN
-        public bool VerifyAccountPin(int accountNumber, int pin)
+        public bool VerifyAccountPin(Guid id, int pin)
         {
-            var account = FindAccountByAccountNumber(accountNumber);
-            return account != null && account.Pin == pin;
+            int accountPin = GetAccountPin(id);
+            return accountPin == pin;
         }
 
         //Verify if the account with the given account number has sufficient balance
-        public bool VerifyAccountBalance(int accountNumber, decimal amount)
+        public bool VerifyAccountBalance(Guid id, decimal amount)
         {
-            var account = FindAccountByAccountNumber(accountNumber);
-            return account != null && account.Balance >= amount;
+            var account = FindAccountByUserId(id);
+            return account.Balance >= amount;
         }
 
+        public Account FindAccountByAccountNumber(int accountNumber)
+        {
+            if(!VerifyAccountExists(accountNumber)) return null;
+            return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
+        }
+
+        public Account FindAccountByUserId(Guid userId)
+        {
+            return Accounts.Values.FirstOrDefault(a => a.User.Id == userId);
+        }
         //Update the balance of the account with the given account number
         public void UpdateAccountBalance(string transactionType, int accountNumber, decimal amount, int? recipientAccountNumber = null)
         {
@@ -70,7 +69,7 @@ namespace CSharpBankProject.src.BankConsole.Data
                     case "Withdraw":
                         account.Balance -= amount;
                         break;
-                    case "Transfer":
+                    case "Transfer" when recipientAccount != null:
                         account.Balance -= amount;
                         recipientAccount.Balance += amount;
                         break;
@@ -97,6 +96,12 @@ namespace CSharpBankProject.src.BankConsole.Data
         {
             Accounts.TryGetValue(userId, out Account account);
             return account;
+        }
+
+        public int GetAccountPin(Guid id)
+        {
+            Account account = Accounts[id];
+            return account.Pin;
         }
     }
 }

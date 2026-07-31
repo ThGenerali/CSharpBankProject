@@ -11,8 +11,8 @@ namespace CSharpBankProject.src.BankConsole.Data
 {
     internal class ServiceRepository
     {
-        private UserRepository userRepository;
-        private AccountRepository accountRepository;
+        private UserRepository userRepository = new UserRepository();
+        private AccountRepository accountRepository = new AccountRepository();
 
 
         public class AccountSession
@@ -35,12 +35,13 @@ namespace CSharpBankProject.src.BankConsole.Data
         public bool VerifyRegisterPassword(string password, string confirmPassword)
         {
             if (confirmPassword == password) { return true; }
-            throw new ArgumentException("Passwords do not match. Registration cancelled.");
+            return false;
         }
 
         public void RegisterUser(string name, string username, string password, int pin)
         {
-            User user = new User(name, username, password);
+            Guid userId = Guid.NewGuid();
+            User user = new User(userId, name, username, password, userRepository);
             userRepository.AddUser(user.Id, user);
             CreateAccount(user, pin);
         }
@@ -48,61 +49,57 @@ namespace CSharpBankProject.src.BankConsole.Data
         public void CreateAccount(User user, int pin)
         {
             int accountNumber = accountRepository.GenerateAccountNumber();
-            Account account = new Account(user.Id, accountNumber, 0m, pin, user);
-            accountRepository.AddAccount(user.Id, account);
+            Account account = new Account(accountNumber, 0m, pin, user, accountRepository);
+            accountRepository.AddAccount(account.User.Id, account);
         }
 
-        public bool Verify4DigitPin(int pin)
+        public string GetUserNameByAccountNumber(int accountNumber)
         {
-            return pin.ToString().Length == 4;
+            var account = accountRepository.FindAccountByAccountNumber(accountNumber);
+            if (account != null)
+            {
+                var user = userRepository.GetUserByUserName(account.User.Username);
+                return user.Username;
+            }
+            return null;
         }
+
+
+        public bool Verify4DigitPin(int pin) { return pin.ToString().Length == 4; }
+
+
         public (string UserName, string Balance) Login(string username, string password)
         {
-            var userName = userRepository.VerifyUsername(username);
+            var userName = userRepository.VerifyUsername(username.Trim());
             if (userName  && userRepository.VerifyPassword(username, password))
             {
-                Console.WriteLine("Login successful.");
-                var user = userRepository.GetUser(username);
+                var user = userRepository.GetUserByUserName(username);
                 accountSession = new AccountSession(accountRepository.GetAccountByUserId(user.Id));
                 return (user.Username, accountSession.account.BalanceCurrency);
             }
             else
             {
-                throw new UnauthorizedAccessException("Credentials are incorrect. Login failed."); ;
+                return default;
             }
         }
 
-        public void Deposit(decimal amount, int pin)
-        {
-            accountSession.account.Deposit(amount, pin);
-        }
+        public void Deposit(decimal amount, int pin) { accountSession.account.Deposit(amount, pin); }
 
-        public void Withdraw(decimal amount, int pin)
-        {
-            accountSession.account.Withdraw(amount, pin);
-        }
+        public void Withdraw(decimal amount, int pin) { accountSession.account.Withdraw(amount, pin); }
 
-        public void Transfer(int targetAccountNumber, decimal amount, int pin)
-        {
-            accountSession.account.Transfer(targetAccountNumber, amount, pin);
-        }
+        public void Transfer(int targetAccountNumber, decimal amount, int pin) { accountSession.account.Transfer(targetAccountNumber, amount, pin); }
+        
 
-        public void UpdatePin(int currentPin, int? newPin)
-        {
-            if (newPin != null)
-            {
-                accountSession.account.UpdatePin(currentPin, newPin.Value);
-            }
-            else
-            {
-                throw new ArgumentException("Cannot update the PIN into a null PIN.");
-            }
-        }
+        public void UpdatePin(int currentPin, int newPin) { accountSession.account.UpdatePin(currentPin, newPin); } 
+        
 
         public (string UserName, int AccountNumber, string Balance) DisplayAccountInfo(int pin)
         {
             var accountInfo = accountSession.account.DisplayAccountInfo(pin);
-            return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance);
+            if (accountInfo != default)
+            { return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance); } else{ return default; }
         }
+
+        public string GetUpdatedBalance() { return accountSession.account.BalanceCurrency; }
     }
 }
