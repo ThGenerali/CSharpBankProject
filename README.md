@@ -25,8 +25,8 @@ The project is designed to evolve over multiple versions, gradually introducing 
 ## 🚀 Roadmap
 | Version | Status |
 |---------|--------|
-| 1.0 | 🚧 |
-| 1.1 | ⏳ |
+| 1.0 | ✅ |
+| 1.1 | 🚧 |
 | 1.2 | ⏳ |
 | 2.0 | ⏳ |
 | 3.0 | ⏳ |
