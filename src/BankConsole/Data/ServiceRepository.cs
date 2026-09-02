@@ -28,14 +28,15 @@ namespace CSharpBankProject.src.BankConsole.Data
 
         public bool verifyNameAndSurname(string name, string surname)
         {
-            return !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname);
+            if(!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname)) { return true; }
+            throw new InvalidOperationException("Name and surname must not be empty.");
         }
 
         //VerifyRegisterInfo method checks if the provided registration information (name, username, and password) is valid for creating a new user account. It verifies that the name and username are not empty and that the password meets certain criteria (e.g., minimum length).
         public bool VerifyRegisterPassword(string password, string confirmPassword)
         {
             if (confirmPassword == password) { return true; }
-            return false;
+            throw new InvalidOperationException("Passwords do not match.");
         }
 
         public void RegisterUser(string name, string username, string password, int pin)
@@ -61,11 +62,15 @@ namespace CSharpBankProject.src.BankConsole.Data
                 var user = userRepository.GetUserByUserName(account.User.Username);
                 return user.Username;
             }
-            return null;
+            throw new KeyNotFoundException("Account not found.");
         }
 
 
-        public bool Verify4DigitPin(int pin) { return pin.ToString().Length == 4; }
+        public bool Verify4DigitPin(int pin)
+        {
+            if (pin.ToString().Length == 4) { return true; }
+            throw new InvalidOperationException("Invalid PIN. It must be 4 digits.");
+        }
 
 
         public (string UserName, string Balance) Login(string username, string password)
@@ -77,10 +82,8 @@ namespace CSharpBankProject.src.BankConsole.Data
                 accountSession = new AccountSession(accountRepository.GetAccountByUserId(user.Id));
                 return (user.Username, accountSession.account.BalanceCurrency);
             }
-            else
-            {
-                return default;
-            }
+            throw new UnauthorizedAccessException("Invalid Credentials.");
+            
         }
 
         public void Deposit(decimal amount, int pin) { accountSession.account.Deposit(amount, pin); }
@@ -97,7 +100,8 @@ namespace CSharpBankProject.src.BankConsole.Data
         {
             var accountInfo = accountSession.account.DisplayAccountInfo(pin);
             if (accountInfo != default)
-            { return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance); } else{ return default; }
+            { return (accountInfo.UserName, accountInfo.AccountNumber, accountInfo.Balance); 
+            } else { throw new UnauthorizedAccessException("Invalid PIN."); }
         }
 
         public string GetUpdatedBalance() { return accountSession.account.BalanceCurrency; }

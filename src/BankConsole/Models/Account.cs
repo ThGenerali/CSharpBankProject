@@ -55,8 +55,8 @@ namespace CSharpBankProject.src.BankConsole.Models
                 {
                     AccountRepository.UpdateAccountBalance(TransactionType.Withdraw.ToString(), AccountNumber, amount);
                     Console.WriteLine($"Withdrawal of {amount} successful. New balance: {BalanceCurrency}");
-                } else { Console.WriteLine("Incorrect PIN. Withdrawal failed.");}
-            } else { Console.WriteLine("Insufficient balance. Withdrawal failed."); }
+                }
+            }
             Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
         }
 
@@ -75,9 +75,9 @@ namespace CSharpBankProject.src.BankConsole.Models
                         if (recipient == null) { Console.WriteLine("Recipient account not found. Transfer failed."); return; }
                         AccountRepository.UpdateAccountBalance(TransactionType.Transfer.ToString(), AccountNumber, amount, recipientAccount);
                         Console.WriteLine($"Transfer of {amount} to {recipient.User.Username}'s account successful. New balance: {BalanceCurrency}");
-                    } else { Console.WriteLine("Recipient account does not exist. Transfer failed."); }
-                } else { Console.WriteLine("Incorrect PIN. Transfer failed."); }
-            } else { Console.WriteLine("Insufficient balance. Transfer failed."); }
+                    } 
+                } 
+            } 
             Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
 
         }
@@ -89,10 +89,6 @@ namespace CSharpBankProject.src.BankConsole.Models
             {
                 this.Pin = newPin;
                 Console.WriteLine("PIN updated successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Incorrect current PIN. PIN update failed.");
             }
             Thread.Sleep(2000); // Wait for 2 seconds before returning to the main menu
         }

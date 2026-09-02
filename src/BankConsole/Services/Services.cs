@@ -57,14 +57,12 @@ namespace CSharpBankProject.src.BankConsole.Services
                                 serviceRepository.RegisterUser(name, username, password, pin);
                                 Console.WriteLine($"The user {username} has been registred!");
                             }
-                            else
-                            {
-                                Console.WriteLine("Invalid PIN. Please enter a 4-digit PIN.");
-                            }
                         }
-                    } else { Console.WriteLine("Passwords do not match. Registration cancelled."); }
-                } else { Console.WriteLine("Registration cancelled."); }
-            } else { Console.WriteLine("Name or Surname cannot be empty. Please try again."); }
+                    }
+                } 
+                //this will be in the catch of the try/catchstatement with the exception message 
+                Console.WriteLine("Registration cancelled.");
+            }
             System.Threading.Thread.Sleep(3000);
             Console.Clear();
         }
@@ -80,19 +78,14 @@ namespace CSharpBankProject.src.BankConsole.Services
             System.Threading.Thread.Sleep(3000);
             Console.Clear();
             var userAccount = serviceRepository.Login(nameLogin, password);
-            if (userAccount == default)
-            {
-                Console.WriteLine("Invalid credentials. Please try again.");
-                System.Threading.Thread.Sleep(1500);
-                Console.Clear();
-                return default;
-            } else
+            if (userAccount != default)
             {
                 Console.WriteLine("Login successful.");
                 System.Threading.Thread.Sleep(1500);
                 Console.Clear();
                 return userAccount;
-            }
+            } 
+            return default;
         }
 
         public void Transaction()
@@ -164,11 +157,8 @@ Please select a transaction type:
                         System.Threading.Thread.Sleep(2000);
                         serviceRepository.Transfer(targetAccountNumber, transferAmount, transferPin);
                         Console.Clear();
-                    } else { 
-                        Console.WriteLine("Account not found! Transferation canceled."); 
-                        break;
                     }
-                        break;
+                    break;
                 case 4:
                     Console.WriteLine("Transaction cancelled.");
                     System.Threading.Thread.Sleep(1000);
@@ -191,7 +181,7 @@ Please select a transaction type:
                 Console.WriteLine("Processing PIN change...");
                 System.Threading.Thread.Sleep(1000);
                 serviceRepository.UpdatePin(currentPin, newPin);
-            } else { Console.WriteLine("Invalid PIN. Please ensure you enter your current and new PIN correctly."); }
+            }
             Thread.Sleep(1500);
         }
 
@@ -205,7 +195,7 @@ Please select a transaction type:
             Console.Clear();
             var accountDetails = serviceRepository.DisplayAccountInfo(pin);
             if (accountDetails != default) {Console.WriteLine($"Account Details:\n\nName: {accountDetails.UserName}\nAccount Number: {accountDetails.AccountNumber}\nBalance: {accountDetails.Balance}");
-            } else { Console.WriteLine("Invalid PIN. Unable to retrieve account details."); }
+            }
             Console.WriteLine("\nPress any key to return to the main menu.");
             Console.ReadKey();
             Console.Clear();      
