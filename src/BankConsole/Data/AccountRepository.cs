@@ -25,13 +25,18 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
 
         //Verify if an account with the given account number exists in the Accounts dictionary
-        public bool VerifyAccountExists(int accountNumber)
+        public bool VerifyAccountExists(int accountNumber, bool neededFalseResult = false)
         {
-            if (Accounts.Values.Any(a => a.AccountNumber == accountNumber))
+            bool account = Accounts.Values.Any(a => a.AccountNumber == accountNumber);
+            if (account)
             {
                 return true;
+            } 
+            else if (neededFalseResult && !account)
+            {
+                return false;
             }
-            throw new KeyNotFoundException("Account not found.");
+            throw new KeyNotFoundException("Acount not found!");
         }
 
         //Verify if the PIN of the account with the given account number matches the provided PIN
@@ -104,7 +109,7 @@ namespace CSharpBankProject.src.BankConsole.Data
             {
                 accountNumber = random.Next(100000, 999999);
             }
-            while (VerifyAccountExists(accountNumber));
+            while (VerifyAccountExists(accountNumber, true));
             return accountNumber;
         }
 
