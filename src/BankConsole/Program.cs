@@ -47,6 +47,7 @@ namespace CSharpBankProject.src.BankConsole
                             accountMenuChoice = consoleMenu.AccountMenu(loginService.UserName, services.GetUpdatedBalance());
                             Console.Clear();
                         }
+                            
                         break;
                     case 2:
                         services.RegisterUser();

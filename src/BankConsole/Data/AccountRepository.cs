@@ -25,29 +25,50 @@ namespace CSharpBankProject.src.BankConsole.Data
         }
 
         //Verify if an account with the given account number exists in the Accounts dictionary
-        public bool VerifyAccountExists(int accountNumber)
+        public bool VerifyAccountExists(int accountNumber, bool neededFalseResult = false)
         {
-            return Accounts.Values.Any(a => a.AccountNumber == accountNumber);
+            bool account = Accounts.Values.Any(a => a.AccountNumber == accountNumber);
+            if (account)
+            {
+                return true;
+            } 
+            else if (neededFalseResult && !account)
+            {
+                return false;
+            }
+            throw new KeyNotFoundException("Acount not found!");
         }
 
         //Verify if the PIN of the account with the given account number matches the provided PIN
         public bool VerifyAccountPin(Guid id, int pin)
         {
             int accountPin = GetAccountPin(id);
-            return accountPin == pin;
+            if (accountPin == pin)
+            {
+                return true;
+            }
+            throw new UnauthorizedAccessException("Invalid PIN.");
         }
 
         //Verify if the account with the given account number has sufficient balance
         public bool VerifyAccountBalance(Guid id, decimal amount)
         {
             var account = FindAccountByUserId(id);
-            return account.Balance >= amount;
+            if (account.Balance >= amount)
+            {
+                return true;
+            }
+            throw new InvalidOperationException("Insufficient balance.");
         }
 
         public Account FindAccountByAccountNumber(int accountNumber)
         {
-            if(!VerifyAccountExists(accountNumber)) return null;
-            return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
+            if(VerifyAccountExists(accountNumber))
+            {
+                return Accounts.Values.FirstOrDefault(a => a.AccountNumber == accountNumber);
+            }
+            //return some value because if the account does not exist, the method will throw an exception in VerifyAccountExists
+            return null;
         }
 
         public Account FindAccountByUserId(Guid userId)
@@ -88,7 +109,7 @@ namespace CSharpBankProject.src.BankConsole.Data
             {
                 accountNumber = random.Next(100000, 999999);
             }
-            while (VerifyAccountExists(accountNumber));
+            while (VerifyAccountExists(accountNumber, true));
             return accountNumber;
         }
 

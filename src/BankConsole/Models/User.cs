@@ -31,8 +31,6 @@ namespace CSharpBankProject.src.BankConsole.Models
             if (UserRepository.VerifyPassword(this.Username, currentPassword))
             {
                 this.Password = newPassword;
-            } else {
-                Console.WriteLine("Current password is incorrect. Password update failed.");
             }
         } 
     }
